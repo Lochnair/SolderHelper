@@ -107,7 +107,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.txt_mods)
         Me.Controls.Add(Me.btn_browseMods)
         Me.Name = "MainForm"
-        Me.Text = "Form1"
+        Me.Text = "SolderHelper v0.1"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
