@@ -5,6 +5,7 @@ Public Class MainForm
 
     Private Sub BrowseFolder(ByRef textBox As TextBox)
         Dim dialog As New FolderBrowserDialog
+
         If dialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
             textBox.Text = dialog.SelectedPath
         End If
@@ -19,12 +20,12 @@ Public Class MainForm
     End Sub
 
     Private Sub btn_run_Click(sender As Object, e As EventArgs) Handles btn_run.Click
-        If String.IsNullOrEmpty(txt_mods.Text) Then
+        If String.IsNullOrEmpty(txt_mods.Text) Or Not Directory.Exists(txt_mods.Text) Then
             MsgBox("Choose a mods folder first!")
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(txt_output.Text) Then
+        If String.IsNullOrEmpty(txt_output.Text) Or Not Directory.Exists(txt_output.Text) Then
             MsgBox("Choose a output folder first!")
             Exit Sub
         End If
