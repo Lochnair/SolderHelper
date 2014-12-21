@@ -48,7 +48,6 @@ Partial Class MainForm
         Me.txt_mods.ReadOnly = True
         Me.txt_mods.Size = New System.Drawing.Size(254, 20)
         Me.txt_mods.TabIndex = 1
-        Me.txt_mods.Text = "C:\Users\The Fox\AppData\Roaming\.technic\modpacks\divine-technology\mods1"
         '
         'Label1
         '
@@ -76,7 +75,6 @@ Partial Class MainForm
         Me.txt_output.ReadOnly = True
         Me.txt_output.Size = New System.Drawing.Size(254, 20)
         Me.txt_output.TabIndex = 4
-        Me.txt_output.Text = "C:\Users\The Fox\Desktop\Solder"
         '
         'Label2
         '
