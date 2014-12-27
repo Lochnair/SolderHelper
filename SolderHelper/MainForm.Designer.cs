@@ -105,7 +105,7 @@ namespace SolderHelper
             this.Controls.Add(this.txt_mods);
             this.Controls.Add(this.btn_browseMods);
             this.Name = "MainForm";
-            this.Text = "SolderHelper v0.1";
+            this.Text = "SolderHelper v0.1.1";
             this.ResumeLayout(false);
             this.PerformLayout();
 
