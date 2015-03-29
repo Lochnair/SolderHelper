@@ -16,6 +16,7 @@ namespace SolderHelper
         static void Main()
         {
             EmbeddedAssembly.Load("SolderHelper.Ionic.Zip.dll", "Ionic.Zip.dll");
+            EmbeddedAssembly.Load("SolderHelper.Newtonsoft.Json.dll", "Newtonsoft.Json.dll");
 
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 

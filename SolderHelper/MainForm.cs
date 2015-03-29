@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Ionic.Zip;
+using Newtonsoft.Json;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace SolderHelper
 {
@@ -11,6 +14,12 @@ namespace SolderHelper
         public MainForm()
         {
             InitializeComponent();
+
+#if DEBUG
+            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            txt_mods.Text = desktop + Path.DirectorySeparatorChar + "SolderNew";
+            txt_output.Text = desktop + Path.DirectorySeparatorChar + "Solder"; 
+#endif
         }
 
         private void BrowseFolder(ref TextBox textBox)
@@ -58,9 +67,10 @@ namespace SolderHelper
 
                 try
                 {
-                    dynamic versionStart = name.LastIndexOf("-") + 1;
-                    dialog.Slug = name.Substring(0, versionStart - 1);
-                    dialog.Version = name.Substring(versionStart, name.Length - versionStart);
+                    var mcModInfo = GetMCModInfo(path);
+
+                    dialog.Slug = mcModInfo.Name.GenerateSlug();
+                    dialog.Version = mcModInfo.FullVersion;
                 }
                 catch
                 {
@@ -79,6 +89,8 @@ namespace SolderHelper
             }
         }
 
+        
+
         private string[] GetFiles(string directory, string searchPattern, SearchOption searchOption)
         {
             var searchPatterns = searchPattern.Split('|');
@@ -93,5 +105,67 @@ namespace SolderHelper
 
             return files.ToArray();
         }
+
+        private MCModInfo GetMCModInfo(string zipPath)
+        {
+            using (ZipFile zip = new ZipFile(zipPath))
+            {
+                if (!zip.ContainsEntry("mcmod.info"))
+                {
+                    throw new Exception("This zip file does not contain a mcmod.info entry");
+                }
+
+                try
+                {
+                    Stream entryStream = zip["mcmod.info"].OpenReader();
+                    string json = new StreamReader(entryStream).ReadToEnd();
+                    return JsonConvert.DeserializeObject<MCModInfo>(json);
+                }
+                catch (JsonSerializationException)
+                {
+                    Stream entryStream = zip["mcmod.info"].OpenReader();
+                    string json = new StreamReader(entryStream).ReadToEnd();
+                    return JsonConvert.DeserializeObject<MCModInfo[]>(json)[0];
+                }
+                
+            }
+        }
+
+        private class MCModInfo
+        {
+            public string[] Authors { get; set; }
+            public string Name { get; set; }
+            public string FullVersion
+            {
+                get
+                {
+                    if (String.IsNullOrEmpty(MCVersion))
+                    {
+                        if (String.IsNullOrEmpty(Version))
+                        {
+                            return null;
+                        }
+
+                        return Version;
+                    }
+
+                    if (Version.StartsWith(MCVersion))
+                    {
+                        return Version;
+                    }
+
+                    return MCVersion + "-" + Version;
+                }
+            }
+            public string MCVersion { get; set; }
+            public string Version { get; set; }
+            public Uri url { get; set; }
+        }
+
+        private class MCVersion
+        {
+            public string Version { get; set; }
+            public string MD5 { get; set; }
+        }   
     }
 }
